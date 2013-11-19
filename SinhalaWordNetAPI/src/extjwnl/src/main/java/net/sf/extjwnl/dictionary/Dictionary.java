@@ -32,9 +32,9 @@ import java.util.*;
 public abstract class Dictionary {
 
     static {
-    	System.out.println("stat");
+    	
         JWNL.initialize();
-        System.out.println(" done stat");
+        
     }
 
     private static final Log log = LogFactory.getLog(Dictionary.class);
@@ -126,7 +126,7 @@ public abstract class Dictionary {
     private static final Comparator<Word> wordLexIdComparator = new Comparator<Word>() {
         @Override
         public int compare(Word o1, Word o2) {
-        	System.out.println("compare 1");
+        	
             return o1.getLexId() - o2.getLexId();
             
         }
@@ -209,7 +209,7 @@ public abstract class Dictionary {
     }
 
     public static Dictionary getInstance() {
-    	System.out.println("get ins");
+    	
         return dictionary;
     }
 
@@ -221,7 +221,7 @@ public abstract class Dictionary {
      * @throws JWNLException various JWNL exceptions, depending on where this fails
      */
     public static Dictionary getInstance(InputStream properties) throws JWNLException {
-    	System.out.println("get ins str");
+    	
         try {
             // find the properties file
             if (properties == null || properties.available() <= 0) {

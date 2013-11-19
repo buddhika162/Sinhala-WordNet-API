@@ -20,14 +20,16 @@ public enum POS {
     ADJECTIVE(3, "a", "ADJECTIVE"),
     ADVERB(4, "r", "ADVERB"),
     ROOT(5, "t", "ROOT"),
-    GENDER(6, "g", "GENDER");
+    GENDER(6, "g", "GENDER"),
+    DERIVATIONLANG(7, "d", "DERIVATIONLANG");
 
     public static final String ADJECTIVE_SATELLITE_KEY = "s";
     public static final int ADJECTIVE_SATELLITE_ID = 5;
 
-    private static final List<POS> ALL_POS = Collections.unmodifiableList(Arrays.asList(NOUN, VERB, ADJECTIVE, ADVERB, ROOT, GENDER));
+    private static final List<POS> ALL_POS = Collections.unmodifiableList(Arrays.asList(NOUN, VERB, ADJECTIVE, ADVERB, ROOT, GENDER, DERIVATIONLANG));
 
     public static List<POS> getAllPOS() {
+    	
         return ALL_POS;
     }
 
@@ -39,6 +41,7 @@ public enum POS {
      * @return POS
      */
     public static POS getPOSForLabel(String label) {
+    	
         for (POS pos : ALL_POS) {
             if (pos.getLabel().equals(label)) {
                 return pos;
@@ -55,6 +58,7 @@ public enum POS {
      * @return POS
      */
     public static POS getPOSForKey(String key) {
+    	
         if (NOUN.getKey().equals(key)) {
             return POS.NOUN;
         }
@@ -73,6 +77,9 @@ public enum POS {
         if (GENDER.getKey().equals(key)) {
             return POS.GENDER;
         }
+        if (DERIVATIONLANG.getKey().equals(key)) {
+            return POS.DERIVATIONLANG;
+        }
         if (ADJECTIVE_SATELLITE_KEY.equals(key)) {
             return POS.ADJECTIVE;
         }
@@ -88,6 +95,7 @@ public enum POS {
      * @return POS
      */
     public static POS getPOSForId(int id) {
+    	
         if (NOUN.getId() == id) {
             return POS.NOUN;
         }
@@ -102,6 +110,12 @@ public enum POS {
         }
         if (ROOT.getId() == id) {
             return POS.ROOT;
+        }
+        if (GENDER.getId() == id) {
+            return POS.GENDER;
+        }
+        if (DERIVATIONLANG.getId() == id) {
+            return POS.DERIVATIONLANG;
         }
         if (ADJECTIVE_SATELLITE_ID == id) {
             return POS.ADJECTIVE;
@@ -124,6 +138,7 @@ public enum POS {
     private final transient String key;
 
     private POS(int id, String key, String label) {
+    	
         JWNL.initialize();
         this.id = id;
         this.key = key;
@@ -131,6 +146,7 @@ public enum POS {
     }
 
     public String toString() {
+    	
         return JWNL.resolveMessage("DATA_TOSTRING_010", getLabel());
     }
 

@@ -73,7 +73,9 @@ public enum PointerType {
     ROOT("@t", "ROOT", PointerTypeFlags.N | PointerTypeFlags.R | PointerTypeFlags.V),
     ROOTED("~t", "ROOTED", PointerTypeFlags.N | PointerTypeFlags.R | PointerTypeFlags.V),
     GENDER("@g", "GENDER", PointerTypeFlags.N | PointerTypeFlags.G | PointerTypeFlags.V),
-    GENDERED("~g", "GENDER", PointerTypeFlags.N | PointerTypeFlags.G | PointerTypeFlags.V),
+    GENDERED("~g", "GENDERED", PointerTypeFlags.N | PointerTypeFlags.G | PointerTypeFlags.V),
+    DERIVATION_LANG("@d", "DERIVATION_LANG", PointerTypeFlags.N | PointerTypeFlags.D | PointerTypeFlags.V),
+    DERIVATED_LANG("~d", "DERIVATED_LANG", PointerTypeFlags.N | PointerTypeFlags.D | PointerTypeFlags.V),
     
     CAUSE(">", "CAUSE", PointerTypeFlags.V),
     PARTICIPLE_OF("<", "PARTICIPLE_OF", PointerTypeFlags.ADJ | PointerTypeFlags.LEXICAL),
@@ -100,6 +102,7 @@ public enum PointerType {
         POS_TO_MASK_MAP.put(POS.VERB, PointerTypeFlags.V);
         POS_TO_MASK_MAP.put(POS.ROOT, PointerTypeFlags.R);
         POS_TO_MASK_MAP.put(POS.GENDER, PointerTypeFlags.G);
+        POS_TO_MASK_MAP.put(POS.DERIVATIONLANG, PointerTypeFlags.D);
         POS_TO_MASK_MAP.put(POS.ADJECTIVE, PointerTypeFlags.ADJ);
         POS_TO_MASK_MAP.put(POS.ADVERB, PointerTypeFlags.ADV);
     }
@@ -109,7 +112,7 @@ public enum PointerType {
      */
     private static final List<PointerType> ALL_TYPES = Collections.unmodifiableList(Arrays.asList(
             ANTONYM, HYPERNYM, HYPONYM, ENTAILMENT, SIMILAR_TO, MEMBER_HOLONYM, SUBSTANCE_HOLONYM,
-            PART_HOLONYM, MEMBER_MERONYM, SUBSTANCE_MERONYM, PART_MERONYM, ROOT, ROOTED, GENDER, GENDERED,
+            PART_HOLONYM, MEMBER_MERONYM, SUBSTANCE_MERONYM, PART_MERONYM, ROOT, ROOTED, GENDER, GENDERED, DERIVATION_LANG, DERIVATED_LANG, 
             CAUSE, PARTICIPLE_OF, SEE_ALSO, PERTAINYM, ATTRIBUTE, VERB_GROUP, DERIVATION,
             CATEGORY, USAGE, REGION, CATEGORY_MEMBER, USAGE_MEMBER, REGION_MEMBER,
             INSTANCE_HYPERNYM, INSTANCES_HYPONYM
@@ -123,6 +126,7 @@ public enum PointerType {
         setSymmetric(PART_MERONYM, PART_HOLONYM);
         setSymmetric(ROOT, ROOTED);
         setSymmetric(GENDER, GENDERED);
+        setSymmetric(DERIVATION_LANG, DERIVATED_LANG);
         setSymmetric(SIMILAR_TO, SIMILAR_TO);
         setSymmetric(ATTRIBUTE, ATTRIBUTE);
         setSymmetric(VERB_GROUP, VERB_GROUP);
@@ -194,6 +198,12 @@ public enum PointerType {
         }
         if (GENDERED.getKey().equals(key)) {
             return GENDERED;
+        }
+        if (DERIVATION_LANG.getKey().equals(key)) {
+            return DERIVATION_LANG;
+        }
+        if (DERIVATED_LANG.getKey().equals(key)) {
+            return DERIVATED_LANG;
         }
         if (CAUSE.getKey().equals(key)) {
             return CAUSE;
@@ -393,6 +403,9 @@ public enum PointerType {
             }
             if ((flags & PointerTypeFlags.G) != 0) {
                 str += JWNL.resolveMessage("GENDER") + ", ";
+            }
+            if ((flags & PointerTypeFlags.D) != 0) {
+                str += JWNL.resolveMessage("DERIVATIONLANG") + ", ";
             }
             if ((flags & PointerTypeFlags.LEXICAL) != 0) {
                 str += JWNL.resolveMessage("LEXICAL") + ", ";

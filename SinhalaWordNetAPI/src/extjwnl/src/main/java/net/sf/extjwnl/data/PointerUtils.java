@@ -228,6 +228,9 @@ public class PointerUtils {
     public static PointerTargetNodeList getGender(Synset synset) {
         return getPointerTargets(synset, PointerType.GENDER);
     }
+    public static PointerTargetNodeList getDerivationlang(Synset synset) {
+        return getPointerTargets(synset, PointerType.DERIVATION_LANG);
+    }
 
     /**
      * Returns member meronyms of <code>synset</code>.
