@@ -13,12 +13,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaDerivationType;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaGender;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaNoun;
+import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaOrigin;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaPointerTyps;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaRoot;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaSencePointer;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaSynset;
+import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaUsage;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaVerb;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaWord;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaWordPointer;
@@ -157,6 +160,72 @@ public long addGenderSynsetSakshara(MongoSinhalaGender mongoGender) throws FileN
     return newSynset.getOffset();
 }
 
+public long addDerivationSynsetSakshara(MongoSinhalaDerivationType mongoDeri) throws FileNotFoundException, JWNLException{
+	  
+    //Iterator<Synset> synsets = dictionary.getSynsetIterator(POS.NOUN);
+//	       Iterator<Synset> synsets = dictionary.getSynsetIterator(POS.VERB);
+	dictionary = Dictionary.getInstance();
+    dictionary.edit();
+//	       DI
+    Synset newSynset = dictionary.createSynset(POS.DERIVATIONLANG);
+   // Synset newSynset = new Synset(dictionary, POS.NOUN);
+    for(int i=0;i<mongoDeri.getWords().size();i++){
+    	mongoDeri.getWords().get(0).getLemma();
+    //Synset newSynset = new Synset(dictionary, POS.NOUN);
+   // newSynset.setLexFileNum(4);
+    newSynset.getWords().add(new Word(dictionary, newSynset, i+1, mongoDeri.getWords().get(i).getLemma()));
+    
+   
+    }
+    newSynset.setGloss(mongoDeri.getGloss());
+
+    
+    return newSynset.getOffset();
+}
+public long addUsageSynsetSakshara(MongoSinhalaUsage mongoUsage) throws FileNotFoundException, JWNLException{
+	  
+    //Iterator<Synset> synsets = dictionary.getSynsetIterator(POS.NOUN);
+//	       Iterator<Synset> synsets = dictionary.getSynsetIterator(POS.VERB);
+	dictionary = Dictionary.getInstance();
+    dictionary.edit();
+//	       DI
+    Synset newSynset = dictionary.createSynset(POS.USAGE);
+   // Synset newSynset = new Synset(dictionary, POS.NOUN);
+    for(int i=0;i<mongoUsage.getWords().size();i++){
+    	mongoUsage.getWords().get(0).getLemma();
+    //Synset newSynset = new Synset(dictionary, POS.NOUN);
+   // newSynset.setLexFileNum(4);
+    newSynset.getWords().add(new Word(dictionary, newSynset, i+1, mongoUsage.getWords().get(i).getLemma()));
+    
+   
+    }
+    newSynset.setGloss(mongoUsage.getGloss());
+
+    
+    return newSynset.getOffset();
+}
+public long addOriginSynsetSakshara(MongoSinhalaOrigin mongoOrigin) throws FileNotFoundException, JWNLException{
+	  
+    //Iterator<Synset> synsets = dictionary.getSynsetIterator(POS.NOUN);
+//	       Iterator<Synset> synsets = dictionary.getSynsetIterator(POS.VERB);
+	dictionary = Dictionary.getInstance();
+    dictionary.edit();
+//	       DI
+    Synset newSynset = dictionary.createSynset(POS.ORIGIN);
+   // Synset newSynset = new Synset(dictionary, POS.NOUN);
+    for(int i=0;i<mongoOrigin.getWords().size();i++){
+    	mongoOrigin.getWords().get(0).getLemma();
+    //Synset newSynset = new Synset(dictionary, POS.NOUN);
+   // newSynset.setLexFileNum(4);
+    newSynset.getWords().add(new Word(dictionary, newSynset, i+1, mongoOrigin.getWords().get(i).getLemma()));
+    
+   
+    }
+    newSynset.setGloss(mongoOrigin.getGloss());
+
+    
+    return newSynset.getOffset();
+}
 public void addNounRelations(List<MongoSinhalaSynset> hm,HashMap<String, Integer> rootOrder) throws JWNLException{
 	dictionary = Dictionary.getInstance();
     dictionary.edit();
@@ -213,16 +282,73 @@ public void addNounRelations(List<MongoSinhalaSynset> hm,HashMap<String, Integer
 		}
     });
     
+    Iterator<Synset> dsynsets = dictionary.getSynsetIterator(POS.DERIVATIONLANG);
+	//Synset newSynset = new Synset(dictionary, POS.NOUN);
+    List<Synset> dsynsetlist = new ArrayList<Synset>();
+    while(dsynsets.hasNext()){
+    	dsynsetlist.add(dsynsets.next());
+	
+    }
+    
+    Collections.sort(dsynsetlist, new Comparator<Synset>() {
+
+       
+		@Override
+		public int compare(Synset o1, Synset o2) {
+			// TODO Auto-generated method stub
+			return Long.compare(o1.getOffset(), o2.getOffset()); 
+		}
+    });
+    
+    Iterator<Synset> usynsets = dictionary.getSynsetIterator(POS.USAGE);
+	//Synset newSynset = new Synset(dictionary, POS.NOUN);
+    List<Synset> usynsetlist = new ArrayList<Synset>();
+    while(usynsets.hasNext()){
+    	usynsetlist.add(usynsets.next());
+	
+    }
+    
+    Collections.sort(usynsetlist, new Comparator<Synset>() {
+
+       
+		@Override
+		public int compare(Synset o1, Synset o2) {
+			// TODO Auto-generated method stub
+			return Long.compare(o1.getOffset(), o2.getOffset()); 
+		}
+    });
+    
+    Iterator<Synset> osynsets = dictionary.getSynsetIterator(POS.ORIGIN);
+	//Synset newSynset = new Synset(dictionary, POS.NOUN);
+    List<Synset> osynsetlist = new ArrayList<Synset>();
+    while(osynsets.hasNext()){
+    	osynsetlist.add(osynsets.next());
+	
+    }
+    
+    Collections.sort(osynsetlist, new Comparator<Synset>() {
+
+       
+		@Override
+		public int compare(Synset o1, Synset o2) {
+			// TODO Auto-generated method stub
+			return Long.compare(o1.getOffset(), o2.getOffset()); 
+		}
+    });
+    
     
 	 
 	 for (int j=0;j<hm.size();j++) {
 		
 		//System.out.println(mEntry.getKey() + " : " + mEntry.getValue());
 		MongoSinhalaNoun noun=  (MongoSinhalaNoun) hm.get(j);
+		
 		List<MongoSinhalaSencePointer> pointers = noun.getSencePointers();
+		
 		if(pointers.size()>0){
 			for(int i=0 ; i<pointers.size();i++){
 				MongoSinhalaPointerTyps ptype =pointers.get(i).getPointerType();
+				
 				if(ptype == MongoSinhalaPointerTyps.GENDER){
 					Long pid = pointers.get(i).getSynsetId();
 					Integer intSynID = (int) (long) pid;
@@ -230,6 +356,7 @@ public void addNounRelations(List<MongoSinhalaSynset> hm,HashMap<String, Integer
 					Pointer newPointer5 = new Pointer(PointerType.GENDER, nsynsetlist.get(j), gsynsetlist.get(intSynID-1));
 					nsynsetlist.get(j).getPointers().add(newPointer5);
 				}
+				
 				
 			}
 		}
@@ -248,13 +375,49 @@ public void addNounRelations(List<MongoSinhalaSynset> hm,HashMap<String, Integer
 					Pointer newPointer = new Pointer(PointerType.ROOT, nsynsetlist.get(j).getWords().get(i), rsynsetlist.get(rposision).getWords().get(0));
 					nsynsetlist.get(j).getPointers().add(newPointer);
 				}
+				else if(ptype == MongoSinhalaPointerTyps.DERIVATION_TYPE){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.DERIVATION_LANG, nsynsetlist.get(j).getWords().get(i), dsynsetlist.get(intSynID-1).getWords().get(0));
+					nsynsetlist.get(j).getPointers().add(newPointer);
+				}
+				else if(ptype == MongoSinhalaPointerTyps.USAGE){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.USAGE_MODE, nsynsetlist.get(j).getWords().get(i), usynsetlist.get(intSynID-1).getWords().get(0));
+					nsynsetlist.get(j).getPointers().add(newPointer);
+				}
+				else if(ptype == MongoSinhalaPointerTyps.ORIGIN){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.ORIGIN, nsynsetlist.get(j).getWords().get(i), osynsetlist.get(intSynID-1).getWords().get(0));
+					nsynsetlist.get(j).getPointers().add(newPointer);
+				}
 			}
 		}
 		
 		
 	}
     
-    System.out.println("size "+nsynsetlist.size());
+    
     for(int i=0;i<nsynsetlist.size();i++){
     //System.out.println(nsynsetlist.get(i)+"size"+i);
     }

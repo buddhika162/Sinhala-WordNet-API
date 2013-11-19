@@ -15,5 +15,7 @@ public interface PointerTypeFlags {
     int R	= 32;
     int G	= 64;
     int D	= 128;
+    int U	= 256;
+    int O	= 512;
     int LEXICAL = 16;
 }

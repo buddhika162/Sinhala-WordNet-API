@@ -19,14 +19,17 @@ public enum POS {
     VERB(2, "v", "VERB"),
     ADJECTIVE(3, "a", "ADJECTIVE"),
     ADVERB(4, "r", "ADVERB"),
+    
     ROOT(5, "t", "ROOT"),
     GENDER(6, "g", "GENDER"),
-    DERIVATIONLANG(7, "d", "DERIVATIONLANG");
+    DERIVATIONLANG(7, "d", "DERIVATIONLANG"),
+    USAGE(7, "u", "USAGE"),
+    ORIGIN(7, "o", "ORIGIN");
 
     public static final String ADJECTIVE_SATELLITE_KEY = "s";
     public static final int ADJECTIVE_SATELLITE_ID = 5;
 
-    private static final List<POS> ALL_POS = Collections.unmodifiableList(Arrays.asList(NOUN, VERB, ADJECTIVE, ADVERB, ROOT, GENDER, DERIVATIONLANG));
+    private static final List<POS> ALL_POS = Collections.unmodifiableList(Arrays.asList(NOUN, VERB, ADJECTIVE, ADVERB, ROOT, GENDER, DERIVATIONLANG, USAGE, ORIGIN));
 
     public static List<POS> getAllPOS() {
     	
@@ -71,6 +74,8 @@ public enum POS {
         if (ADVERB.getKey().equals(key)) {
             return POS.ADVERB;
         }
+        
+        
         if (ROOT.getKey().equals(key)) {
             return POS.ROOT;
         }
@@ -80,6 +85,14 @@ public enum POS {
         if (DERIVATIONLANG.getKey().equals(key)) {
             return POS.DERIVATIONLANG;
         }
+        if (USAGE.getKey().equals(key)) {
+            return POS.USAGE;
+        }
+        if (ORIGIN.getKey().equals(key)) {
+            return POS.ORIGIN;
+        }
+        
+        
         if (ADJECTIVE_SATELLITE_KEY.equals(key)) {
             return POS.ADJECTIVE;
         }
@@ -108,6 +121,8 @@ public enum POS {
         if (ADVERB.getId() == id) {
             return POS.ADVERB;
         }
+        
+        
         if (ROOT.getId() == id) {
             return POS.ROOT;
         }
@@ -117,6 +132,14 @@ public enum POS {
         if (DERIVATIONLANG.getId() == id) {
             return POS.DERIVATIONLANG;
         }
+        if (USAGE.getId() == id) {
+            return POS.USAGE;
+        }
+        if (ORIGIN.getId() == id) {
+            return POS.ORIGIN;
+        }
+        
+        
         if (ADJECTIVE_SATELLITE_ID == id) {
             return POS.ADJECTIVE;
         }

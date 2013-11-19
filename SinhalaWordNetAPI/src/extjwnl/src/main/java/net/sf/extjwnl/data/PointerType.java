@@ -76,6 +76,10 @@ public enum PointerType {
     GENDERED("~g", "GENDERED", PointerTypeFlags.N | PointerTypeFlags.G | PointerTypeFlags.V),
     DERIVATION_LANG("@d", "DERIVATION_LANG", PointerTypeFlags.N | PointerTypeFlags.D | PointerTypeFlags.V),
     DERIVATED_LANG("~d", "DERIVATED_LANG", PointerTypeFlags.N | PointerTypeFlags.D | PointerTypeFlags.V),
+    USAGE_MODE("@u", "USAGE", PointerTypeFlags.N | PointerTypeFlags.U | PointerTypeFlags.V),
+    USEED_SENCE("~u", "USEED_SENCE", PointerTypeFlags.N | PointerTypeFlags.U | PointerTypeFlags.V),
+    ORIGIN("@o", "ORIGIN", PointerTypeFlags.N | PointerTypeFlags.O | PointerTypeFlags.V),
+    ORIGINED("~o", "ORIGINED", PointerTypeFlags.N | PointerTypeFlags.O | PointerTypeFlags.V),
     
     CAUSE(">", "CAUSE", PointerTypeFlags.V),
     PARTICIPLE_OF("<", "PARTICIPLE_OF", PointerTypeFlags.ADJ | PointerTypeFlags.LEXICAL),
@@ -100,9 +104,13 @@ public enum PointerType {
     static {
         POS_TO_MASK_MAP.put(POS.NOUN, PointerTypeFlags.N);
         POS_TO_MASK_MAP.put(POS.VERB, PointerTypeFlags.V);
+        
         POS_TO_MASK_MAP.put(POS.ROOT, PointerTypeFlags.R);
         POS_TO_MASK_MAP.put(POS.GENDER, PointerTypeFlags.G);
+        POS_TO_MASK_MAP.put(POS.USAGE, PointerTypeFlags.U);
         POS_TO_MASK_MAP.put(POS.DERIVATIONLANG, PointerTypeFlags.D);
+        POS_TO_MASK_MAP.put(POS.ORIGIN, PointerTypeFlags.O);
+        
         POS_TO_MASK_MAP.put(POS.ADJECTIVE, PointerTypeFlags.ADJ);
         POS_TO_MASK_MAP.put(POS.ADVERB, PointerTypeFlags.ADV);
     }
@@ -112,7 +120,7 @@ public enum PointerType {
      */
     private static final List<PointerType> ALL_TYPES = Collections.unmodifiableList(Arrays.asList(
             ANTONYM, HYPERNYM, HYPONYM, ENTAILMENT, SIMILAR_TO, MEMBER_HOLONYM, SUBSTANCE_HOLONYM,
-            PART_HOLONYM, MEMBER_MERONYM, SUBSTANCE_MERONYM, PART_MERONYM, ROOT, ROOTED, GENDER, GENDERED, DERIVATION_LANG, DERIVATED_LANG, 
+            PART_HOLONYM, MEMBER_MERONYM, SUBSTANCE_MERONYM, PART_MERONYM, ROOT, ROOTED, GENDER, GENDERED, DERIVATION_LANG, DERIVATED_LANG, USAGE_MODE, USEED_SENCE, ORIGIN, ORIGINED,
             CAUSE, PARTICIPLE_OF, SEE_ALSO, PERTAINYM, ATTRIBUTE, VERB_GROUP, DERIVATION,
             CATEGORY, USAGE, REGION, CATEGORY_MEMBER, USAGE_MEMBER, REGION_MEMBER,
             INSTANCE_HYPERNYM, INSTANCES_HYPONYM
@@ -124,9 +132,13 @@ public enum PointerType {
         setSymmetric(MEMBER_MERONYM, MEMBER_HOLONYM);
         setSymmetric(SUBSTANCE_MERONYM, SUBSTANCE_HOLONYM);
         setSymmetric(PART_MERONYM, PART_HOLONYM);
+        
         setSymmetric(ROOT, ROOTED);
         setSymmetric(GENDER, GENDERED);
         setSymmetric(DERIVATION_LANG, DERIVATED_LANG);
+        setSymmetric(USAGE_MODE, USEED_SENCE);
+        setSymmetric(ORIGIN, ORIGINED);
+        
         setSymmetric(SIMILAR_TO, SIMILAR_TO);
         setSymmetric(ATTRIBUTE, ATTRIBUTE);
         setSymmetric(VERB_GROUP, VERB_GROUP);
@@ -187,6 +199,8 @@ public enum PointerType {
         if (PART_MERONYM.getKey().equals(key)) {
             return PART_MERONYM;
         }
+        
+        
         if (ROOT.getKey().equals(key)) {
             return ROOT;
         }
@@ -205,6 +219,20 @@ public enum PointerType {
         if (DERIVATED_LANG.getKey().equals(key)) {
             return DERIVATED_LANG;
         }
+        if (USAGE_MODE.getKey().equals(key)) {
+            return USAGE_MODE;
+        }
+        if (USEED_SENCE.getKey().equals(key)) {
+            return USEED_SENCE;
+        }
+        if (ORIGIN.getKey().equals(key)) {
+            return ORIGIN;
+        }
+        if (ORIGINED.getKey().equals(key)) {
+            return ORIGINED;
+        }
+        
+        
         if (CAUSE.getKey().equals(key)) {
             return CAUSE;
         }
@@ -398,6 +426,8 @@ public enum PointerType {
             if ((flags & PointerTypeFlags.ADV) != 0) {
                 str += JWNL.resolveMessage("ADVERB") + ", ";
             }
+            
+            
             if ((flags & PointerTypeFlags.R) != 0) {
                 str += JWNL.resolveMessage("ROOT") + ", ";
             }
@@ -407,6 +437,15 @@ public enum PointerType {
             if ((flags & PointerTypeFlags.D) != 0) {
                 str += JWNL.resolveMessage("DERIVATIONLANG") + ", ";
             }
+            if ((flags & PointerTypeFlags.U) != 0) {
+                str += JWNL.resolveMessage("USAGE") + ", ";
+            }
+            if ((flags & PointerTypeFlags.O) != 0) {
+                str += JWNL.resolveMessage("ORIGIN") + ", ";
+            }
+            
+            
+            
             if ((flags & PointerTypeFlags.LEXICAL) != 0) {
                 str += JWNL.resolveMessage("LEXICAL") + ", ";
             }

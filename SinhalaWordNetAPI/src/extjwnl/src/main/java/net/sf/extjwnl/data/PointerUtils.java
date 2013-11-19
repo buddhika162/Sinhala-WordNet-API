@@ -231,7 +231,13 @@ public class PointerUtils {
     public static PointerTargetNodeList getDerivationlang(Synset synset) {
         return getPointerTargets(synset, PointerType.DERIVATION_LANG);
     }
-
+    public static PointerTargetNodeList getUsage(Synset synset) {
+        return getPointerTargets(synset, PointerType.USAGE_MODE);
+    }
+    public static PointerTargetNodeList getOrigin(Synset synset) {
+        return getPointerTargets(synset, PointerType.ORIGIN);
+    }
+    
     /**
      * Returns member meronyms of <code>synset</code>.
      *

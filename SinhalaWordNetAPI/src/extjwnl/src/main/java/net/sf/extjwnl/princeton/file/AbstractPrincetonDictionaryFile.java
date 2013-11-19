@@ -24,9 +24,12 @@ public abstract class AbstractPrincetonDictionaryFile extends AbstractDictionary
     private static final String VERB_EXT = "verb";
     private static final String ADJECTIVE_EXT = "adj";
     private static final String ADVERB_EXT = "adv";
+    
     private static final String ROOT_EXT = "root";
     private static final String GENDER_EXT = "gender";
     private static final String DERIVATIONLANG_EXT = "derivation";
+    private static final String USAGE_EXT = "usage";
+    private static final String ORIGIN_EXT = "origin";
 
     private static final Map<POS, String> posToExtMap;
     private static final Map<DictionaryFileType, FileNames> fileTypeToFileNameMap;
@@ -37,9 +40,12 @@ public abstract class AbstractPrincetonDictionaryFile extends AbstractDictionary
         posToExtMap.put(POS.VERB, VERB_EXT);
         posToExtMap.put(POS.ADJECTIVE, ADJECTIVE_EXT);
         posToExtMap.put(POS.ADVERB, ADVERB_EXT);
+        
         posToExtMap.put(POS.ROOT, ROOT_EXT);
         posToExtMap.put(POS.GENDER, GENDER_EXT);
         posToExtMap.put(POS.DERIVATIONLANG, DERIVATIONLANG_EXT);
+        posToExtMap.put(POS.USAGE, USAGE_EXT);
+        posToExtMap.put(POS.ORIGIN, ORIGIN_EXT);
 
         fileTypeToFileNameMap = new EnumMap<DictionaryFileType, FileNames>(DictionaryFileType.class);
         fileTypeToFileNameMap.put(DictionaryFileType.INDEX, new FileNames("idx", "index"));
