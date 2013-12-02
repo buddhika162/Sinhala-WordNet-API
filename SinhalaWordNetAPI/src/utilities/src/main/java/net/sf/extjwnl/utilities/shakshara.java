@@ -48,91 +48,40 @@ public class shakshara {
 	   
 	Dictionary dictionary ;
 	       
-public long addNounSynsetSakshara(MongoSinhalaNoun mongoNoun) throws FileNotFoundException, JWNLException{
-  
-       //Iterator<Synset> synsets = dictionary.getSynsetIterator(POS.NOUN);
-//	       Iterator<Synset> synsets = dictionary.getSynsetIterator(POS.VERB);
+public long addSynsetToText(MongoSinhalaSynset mongoSynset,POS pos) throws FileNotFoundException, JWNLException{
+ 	
 	dictionary = Dictionary.getInstance();
        dictionary.edit();
-//	       DI
-       Synset newSynset = dictionary.createSynset(POS.NOUN);
-      // Synset newSynset = new Synset(dictionary, POS.NOUN);
-       for(int i=0;i<mongoNoun.getWords().size();i++){
-       mongoNoun.getWords().get(0).getLemma();
-       //Synset newSynset = new Synset(dictionary, POS.NOUN);
-      // newSynset.setLexFileNum(4);
-       newSynset.getWords().add(new Word(dictionary, newSynset, i+1, mongoNoun.getWords().get(i).getLemma()));
+
+       Synset newSynset = dictionary.createSynset(pos);
+       for(int i=0;i<mongoSynset.getWords().size();i++){
+    	  mongoSynset.getWords().get(0).getLemma();
+       newSynset.getWords().add(new Word(dictionary, newSynset, i+1, mongoSynset.getWords().get(i).getLemma()));
        
       
        }
-       newSynset.setGloss(mongoNoun.getGloss());
-//	       IndexWord newWord = new IndexWord(dictionary, "indeewari", POS.NOUN, newSynset);
-       
-//	       Synset newSynset = new Synset(dictionary, POS.VERB);
-//	       IndexWord newWord = new IndexWord(dictionary, "indeewariIsEditing", POS.VERB, newSynset);
-       
+       newSynset.setGloss(mongoSynset.getGloss());
 
-      // Synset synsetFromTop1 = synsets.next();
-       //Synset synsetFromTop2 = synsets.next();
-       //Synset synsetFromTop3 = synsets.next();
-      // Synset synsetFromTop4 = synsets.next();
-       //Synset synsetFromTop5 = synsets.next();
-       
-       //IndexWord newWord3 = new IndexWord(dictionary, "test123", POS.NOUN, synsetFromTop4);
-       //List<Word> nextword = synsetFromTop5.getWords();
-	    
-       //Pointer newPointer4 = new Pointer(PointerType.CATEGORY, synsetFromTop1, newSynset);
-      //synsetFromTop1.getPointers().add(newPointer4);
-       //Pointer newPointer5 = new Pointer(PointerType.DERIVATION, synsetFromTop2, newSynset);
-      // synsetFromTop2.getPointers().add(newPointer5);
-     // Pointer newPointer1 = new Pointer(PointerType.CATEGORY_MEMBER, synsetFromTop3, newSynset);
-      // synsetFromTop3.getPointers().add(newPointer1);
-     /* Pointer newPointer2 = new Pointer(PointerType.HYPERNYM, synsetFromTop4, newSynset);
-       synsetFromTop4.getPointers().add(newPointer2);
-      Pointer newPointer3 = new Pointer(PointerType.ROOT,newSynset,synsetFromTop5 );
-      System.out.println("my pointer"+newPointer3);
-      newSynset.getPointers().add(newPointer3);
-     */
-       
-      // System.out.println("my pointer"+newPointer3);
        
        return newSynset.getOffset();
 }
 
 
-public long addVerbSynsetSakshara(MongoSinhalaVerb mongoverb) throws FileNotFoundException, JWNLException{
-	  
- 
-	dictionary = Dictionary.getInstance();
-    dictionary.edit();
 
-    Synset newSynset = dictionary.createSynset(POS.VERB);
- 
-    for(int i=0;i<mongoverb.getWords().size();i++){
-    	mongoverb.getWords().get(0).getLemma();
-    
-    newSynset.getWords().add(new Word(dictionary, newSynset, i+1, mongoverb.getWords().get(i).getLemma()));
-    
-   
-    }
-    newSynset.setGloss(mongoverb.getGloss());
-    
-    return newSynset.getOffset();
-}
 
-public long addRootSynsetSakshara(MongoSinhalaRoot mongoRoot) throws FileNotFoundException, JWNLException{
+public long addSpecialSynsetToText(MongoSinhalaSynset mongoSPecialSynset,POS pos) throws FileNotFoundException, JWNLException{
 	  
 	dictionary = Dictionary.getInstance();
     dictionary.edit();
 //	       DI
-    Synset newSynset = dictionary.createSynset(POS.ROOT);
-    for(int i=0;i<mongoRoot.getWords().size();i++){
-    	mongoRoot.getWords().get(0).getLemma();
-    newSynset.getWords().add(new Word(dictionary, newSynset, i+1, mongoRoot.getWords().get(i).getLemma()));
+    Synset newSynset = dictionary.createSynset(pos);
+    for(int i=0;i<mongoSPecialSynset.getWords().size();i++){
+    	mongoSPecialSynset.getWords().get(0).getLemma();
+    newSynset.getWords().add(new Word(dictionary, newSynset, i+1, mongoSPecialSynset.getWords().get(i).getLemma()));
     
    
     }
-    newSynset.setGloss(mongoRoot.getGloss());
+    newSynset.setGloss(mongoSPecialSynset.getGloss());
     
     return newSynset.getOffset();
 }
