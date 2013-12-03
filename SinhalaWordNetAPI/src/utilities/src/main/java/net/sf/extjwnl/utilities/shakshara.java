@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaAdjective;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaDerivationType;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaGender;
 import org.sinhala.wordnet.wordnetDB.model.MongoSinhalaNoun;
@@ -67,7 +68,7 @@ public long addSynsetToText(MongoSinhalaSynset mongoSynset,POS pos) throws FileN
        return newSynset.getOffset();
 }
 
-public void addNounRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSynset> verbSynset,List<MongoSinhalaSynset> adjSynset,HashMap<String, Integer> rootOrder) throws JWNLException{
+public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSynset> verbSynset,List<MongoSinhalaSynset> adjSynset,HashMap<String, Integer> rootOrder) throws JWNLException{
 	dictionary = Dictionary.getInstance();
     dictionary.edit();
     
@@ -75,20 +76,20 @@ public void addNounRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinha
     int nord=0;
 	for(MongoSinhalaSynset s : nounSynset){
 		nOrder.put(s.getEWNId(), nord);
-		//System.out.println("s"+s.toString());
+		//System.out.println(nord+"s"+s.toString());
 		nord++;
 	}
 	HashMap<Long, Integer> vOrder = new HashMap<Long, Integer>();
     int vord=0;
 	for(MongoSinhalaSynset s : verbSynset){
-		nOrder.put(s.getEWNId(), vord);
+		vOrder.put(s.getEWNId(), vord);
 		//System.out.println("s"+s.toString());
 		vord++;
 	}
 	HashMap<Long, Integer> adjOrder = new HashMap<Long, Integer>();
     int adjord=0;
 	for(MongoSinhalaSynset s : adjSynset){
-		nOrder.put(s.getEWNId(), adjord);
+		adjOrder.put(s.getEWNId(), adjord);
 		//System.out.println("s"+s.toString());
 		adjord++;
 	}
@@ -247,7 +248,7 @@ public void addNounRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinha
 		
 		//System.out.println(mEntry.getKey() + " : " + mEntry.getValue());
 		MongoSinhalaNoun noun=  (MongoSinhalaNoun) nounSynset.get(j);
-		
+		//System.out.println("noun"+noun);
 		List<MongoSinhalaSencePointer> pointers = noun.getSencePointers();
 		
 		if(pointers.size()>0){
@@ -262,7 +263,7 @@ public void addNounRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinha
 					nsynsetlist.get(j).getPointers().add(newPointer5);
 				}
 				else{
-					System.out.println(ptype);
+					//System.out.println(ptype);
 					
 					
 					if(pointers.get(i).getPointedFile().equals("n")){
@@ -318,6 +319,7 @@ public void addNounRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinha
 					
 					Long pid = pointers.get(i).getSynsetId();
 					int nposision = tempOrder.get(pid);
+					//System.out.println(pid+"nposision"+nposision);
 					Integer intSynID = (int) (long) pid;
 					Pointer newPointer5 = new Pointer(jwnlpType, nsynsetlist.get(j), tempSynsetlist.get(nposision));
 					nsynsetlist.get(j).getPointers().add(newPointer5);
@@ -410,12 +412,340 @@ public void addNounRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinha
 		
 		
 	}
+	 
+	 
+	 
+	 jwnlpType = null;
+	 tempSynsetlist = new ArrayList<Synset>();
+	 tempSynsets = new ArrayList<MongoSinhalaSynset>();
+	 tempOrder = new HashMap<Long, Integer>();
+	 
+	 for (int j=0;j<verbSynset.size();j++) {
+			
+		//System.out.println(mEntry.getKey() + " : " + mEntry.getValue());
+		MongoSinhalaVerb verb=  (MongoSinhalaVerb) verbSynset.get(j);
+		//System.out.println("verb"+verb);
+		List<MongoSinhalaSencePointer> pointers = verb.getSencePointers();
+		
+		if(pointers.size()>0){
+			for(int i=0 ; i<pointers.size();i++){
+				MongoSinhalaPointerTyps ptype =pointers.get(i).getPointerType();
+				
+				if(ptype == MongoSinhalaPointerTyps.GENDER){
+					Long pid = pointers.get(i).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					//System.out.println(j+"size "+nsynsetlist.size());
+					Pointer newPointer5 = new Pointer(PointerType.GENDER, vsynsetlist.get(j), gsynsetlist.get(intSynID-1));
+					vsynsetlist.get(j).getPointers().add(newPointer5);
+				}
+				else{
+					//System.out.println(ptype);
+					
+					
+					if(pointers.get(i).getPointedFile().equals("n")){
+						tempSynsetlist = nsynsetlist;
+						tempOrder = nOrder;
+						tempSynsets = nounSynset;
+					}
+					else if(pointers.get(i).getPointedFile().equals("v")){
+						tempSynsetlist = vsynsetlist;
+						tempOrder = vOrder;
+						tempSynsets = verbSynset;
+					}
+					else if(pointers.get(i).getPointedFile().equals("adj")){
+						tempSynsetlist = adjsynsetlist;
+						tempOrder = adjOrder;
+						tempSynsets = adjSynset;
+					}
+					
+					
+					
+					
+					if(ptype == MongoSinhalaPointerTyps.HYPERNYM){
+						jwnlpType = PointerType.HYPERNYM;
+					}
+					else if(ptype == MongoSinhalaPointerTyps.HYPONYM){
+						jwnlpType = PointerType.HYPONYM;
+					}
+					else if(ptype == MongoSinhalaPointerTyps.ENTAILMENT){
+						jwnlpType = PointerType.ENTAILMENT;
+					}
+					
+					else if(ptype == MongoSinhalaPointerTyps.CAUSE){
+						jwnlpType = PointerType.CAUSE;
+					}
+					else if(ptype == MongoSinhalaPointerTyps.DERIVATION){
+						jwnlpType = PointerType.DERIVATION;
+					}
+					
+					
+					Long pid = pointers.get(i).getSynsetId();
+					int vposision = tempOrder.get(pid);
+					Integer intSynID = (int) (long) pid;
+					Pointer newPointer5 = new Pointer(jwnlpType, vsynsetlist.get(j), tempSynsetlist.get(vposision));
+					vsynsetlist.get(j).getPointers().add(newPointer5);
+					MongoSinhalaPoinertTypeSemetric SymPointerGenarator = new MongoSinhalaPoinertTypeSemetric();
+					MongoSinhalaPointerTyps symPointer = SymPointerGenarator.getSymetric(ptype);
+					List<MongoSinhalaSencePointer> symPoynterList = tempSynsets.get(vposision).getSencePointers();
+					List<MongoSinhalaSencePointer> newSymPointerList = new ArrayList<MongoSinhalaSencePointer>();
+					//System.out.println("befor"+tempSynsets.get(nposision).toString());
+					for(int k = 0;k<symPoynterList.size();k++){
+						if(symPoynterList.get(k).getSynsetId().equals(verbSynset.get(j).getEWNId()) && symPoynterList.get(k).getPointerType().equals(symPointer)){
+							
+						}
+						else{
+							newSymPointerList.add(symPoynterList.get(k));
+						}
+					}
+					
+					if(pointers.get(i).getPointedFile().equals("n")){
+						nounSynset.get(vposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+nounSynset.get(nposision).toString());
+					}
+					else if(pointers.get(i).getPointedFile().equals("v")){
+						verbSynset.get(vposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+verbSynset.get(nposision).toString());
+					}
+					else if(pointers.get(i).getPointedFile().equals("adj")){
+						adjSynset.get(vposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+adjSynset.get(nposision).toString());
+					}
+					
+					
+				}
+				
+				
+			}
+		}
+		
+		List<MongoSinhalaWord> words = verb.getWords();
+		for(int i=0;i<words.size();i++){
+			List<MongoSinhalaWordPointer> wPointers = words.get(i).getWordPointerList();
+			for(int k=0;k<wPointers.size();k++){
+				MongoSinhalaPointerTyps ptype = wPointers.get(k).getPointerType();
+				if(ptype == MongoSinhalaPointerTyps.ROOT){
+					
+					String rId = wPointers.get(k).getSynsetIDasString();
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					int rposision = rootOrder.get(rId);
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.ROOT, vsynsetlist.get(j).getWords().get(i), rsynsetlist.get(rposision).getWords().get(0));
+					vsynsetlist.get(j).getPointers().add(newPointer);
+				}
+				else if(ptype == MongoSinhalaPointerTyps.DERIVATION_TYPE){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.DERIVATION_LANG, vsynsetlist.get(j).getWords().get(i), dsynsetlist.get(intSynID-1).getWords().get(0));
+					vsynsetlist.get(j).getPointers().add(newPointer);
+				}
+				else if(ptype == MongoSinhalaPointerTyps.USAGE){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.USAGE_MODE, vsynsetlist.get(j).getWords().get(i), usynsetlist.get(intSynID-1).getWords().get(0));
+					vsynsetlist.get(j).getPointers().add(newPointer);
+				}
+				else if(ptype == MongoSinhalaPointerTyps.ORIGIN){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.ORIGIN, vsynsetlist.get(j).getWords().get(i), osynsetlist.get(intSynID-1).getWords().get(0));
+					vsynsetlist.get(j).getPointers().add(newPointer);
+				}
+			}
+		}
+		
+		
+	}
     
+	 
+	 jwnlpType = null;
+	 tempSynsetlist = new ArrayList<Synset>();
+	 tempSynsets = new ArrayList<MongoSinhalaSynset>();
+	 tempOrder = new HashMap<Long, Integer>();
+	 
+	 for (int j=0;j<adjSynset.size();j++) {
+			
+		//System.out.println(mEntry.getKey() + " : " + mEntry.getValue());
+		 MongoSinhalaAdjective adjective=  (MongoSinhalaAdjective) adjSynset.get(j);
+		// System.out.println("adjective"+adjective);
+		List<MongoSinhalaSencePointer> pointers = adjective.getSencePointers();
+		
+		if(pointers.size()>0){
+			for(int i=0 ; i<pointers.size();i++){
+				MongoSinhalaPointerTyps ptype =pointers.get(i).getPointerType();
+				
+				if(ptype == MongoSinhalaPointerTyps.GENDER){
+					Long pid = pointers.get(i).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					//System.out.println(j+"size "+nsynsetlist.size());
+					Pointer newPointer5 = new Pointer(PointerType.GENDER, adjsynsetlist.get(j), gsynsetlist.get(intSynID-1));
+					adjsynsetlist.get(j).getPointers().add(newPointer5);
+				}
+				else{
+					//System.out.println(ptype);
+					
+					
+					if(pointers.get(i).getPointedFile().equals("n")){
+						tempSynsetlist = nsynsetlist;
+						tempOrder = nOrder;
+						tempSynsets = nounSynset;
+					}
+					else if(pointers.get(i).getPointedFile().equals("v")){
+						tempSynsetlist = vsynsetlist;
+						tempOrder = vOrder;
+						tempSynsets = verbSynset;
+					}
+					else if(pointers.get(i).getPointedFile().equals("adj")){
+						tempSynsetlist = adjsynsetlist;
+						tempOrder = adjOrder;
+						tempSynsets = adjSynset;
+					}
+					
+					
+					
+					
+					if(ptype == MongoSinhalaPointerTyps.HYPERNYM){
+						jwnlpType = PointerType.HYPERNYM;
+					}
+					else if(ptype == MongoSinhalaPointerTyps.HYPONYM){
+						jwnlpType = PointerType.HYPONYM;
+					}
+					else if(ptype == MongoSinhalaPointerTyps.ENTAILMENT){
+						jwnlpType = PointerType.ENTAILMENT;
+					}
+					
+					else if(ptype == MongoSinhalaPointerTyps.CAUSE){
+						jwnlpType = PointerType.CAUSE;
+					}
+					else if(ptype == MongoSinhalaPointerTyps.DERIVATION){
+						jwnlpType = PointerType.DERIVATION;
+					}
+					
+					
+					Long pid = pointers.get(i).getSynsetId();
+					int adjposision = tempOrder.get(pid);
+					Integer intSynID = (int) (long) pid;
+					Pointer newPointer5 = new Pointer(jwnlpType, adjsynsetlist.get(j), tempSynsetlist.get(adjposision));
+					adjsynsetlist.get(j).getPointers().add(newPointer5);
+					MongoSinhalaPoinertTypeSemetric SymPointerGenarator = new MongoSinhalaPoinertTypeSemetric();
+					MongoSinhalaPointerTyps symPointer = SymPointerGenarator.getSymetric(ptype);
+					List<MongoSinhalaSencePointer> symPoynterList = tempSynsets.get(adjposision).getSencePointers();
+					List<MongoSinhalaSencePointer> newSymPointerList = new ArrayList<MongoSinhalaSencePointer>();
+					//System.out.println("befor"+tempSynsets.get(nposision).toString());
+					for(int k = 0;k<symPoynterList.size();k++){
+						if(symPoynterList.get(k).getSynsetId().equals(adjSynset.get(j).getEWNId()) && symPoynterList.get(k).getPointerType().equals(symPointer)){
+							
+						}
+						else{
+							newSymPointerList.add(symPoynterList.get(k));
+						}
+					}
+					
+					if(pointers.get(i).getPointedFile().equals("n")){
+						nounSynset.get(adjposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+nounSynset.get(nposision).toString());
+					}
+					else if(pointers.get(i).getPointedFile().equals("v")){
+						verbSynset.get(adjposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+verbSynset.get(nposision).toString());
+					}
+					else if(pointers.get(i).getPointedFile().equals("adj")){
+						adjSynset.get(adjposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+adjSynset.get(nposision).toString());
+					}
+					
+					
+				}
+				
+				
+			}
+		}
+		
+		List<MongoSinhalaWord> words = adjective.getWords();
+		for(int i=0;i<words.size();i++){
+			List<MongoSinhalaWordPointer> wPointers = words.get(i).getWordPointerList();
+			for(int k=0;k<wPointers.size();k++){
+				MongoSinhalaPointerTyps ptype = wPointers.get(k).getPointerType();
+				if(ptype == MongoSinhalaPointerTyps.ROOT){
+					
+					String rId = wPointers.get(k).getSynsetIDasString();
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					int rposision = rootOrder.get(rId);
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.ROOT, adjsynsetlist.get(j).getWords().get(i), rsynsetlist.get(rposision).getWords().get(0));
+					adjsynsetlist.get(j).getPointers().add(newPointer);
+				}
+				else if(ptype == MongoSinhalaPointerTyps.DERIVATION_TYPE){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.DERIVATION_LANG, adjsynsetlist.get(j).getWords().get(i), dsynsetlist.get(intSynID-1).getWords().get(0));
+					adjsynsetlist.get(j).getPointers().add(newPointer);
+				}
+				else if(ptype == MongoSinhalaPointerTyps.USAGE){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.USAGE_MODE, adjsynsetlist.get(j).getWords().get(i), usynsetlist.get(intSynID-1).getWords().get(0));
+					adjsynsetlist.get(j).getPointers().add(newPointer);
+				}
+				else if(ptype == MongoSinhalaPointerTyps.ORIGIN){
+					
+					
+					Long pid =  wPointers.get(k).getSynsetId();
+					Integer intSynID = (int) (long) pid;
+					
+					//System.out.println(noun.getId()+"sence"+noun.getEWNId()+"id "+rId);
+					
+					//System.out.println(rposision+"id "+rId);
+					Pointer newPointer = new Pointer(PointerType.ORIGIN, adjsynsetlist.get(j).getWords().get(i), osynsetlist.get(intSynID-1).getWords().get(0));
+					adjsynsetlist.get(j).getPointers().add(newPointer);
+				}
+			}
+		}
+		
+		
+	}
+	 
     
-   /* for(int i=0;i<nsynsetlist.size();i++){
-    //System.out.println(nsynsetlist.get(i)+"size"+i);
+   /* for(int i=0;i<nounSynset.size();i++){
+    System.out.println(nounSynset.get(i)+"size"+i);
     }
-	Pointer newPointer5 = new Pointer(PointerType.HYPERNYM, nsynsetlist.get(0), nsynsetlist.get(1));
+    
+    Iterator it = nOrder.entrySet().iterator();
+    while (it.hasNext()) {
+        Map.Entry pairs = (Map.Entry)it.next();
+        System.out.println(pairs.getKey() + " = " + pairs.getValue());
+       // it.remove(); // avoids a ConcurrentModificationException
+    }*/
+	/*Pointer newPointer5 = new Pointer(PointerType.HYPERNYM, nsynsetlist.get(0), nsynsetlist.get(1));
 	nsynsetlist.get(0).getPointers().add(newPointer5);
 	Pointer newPointer6 = new Pointer(PointerType.HYPONYM, nsynsetlist.get(1), nsynsetlist.get(0));
 	nsynsetlist.get(1).getPointers().add(newPointer6);*/
