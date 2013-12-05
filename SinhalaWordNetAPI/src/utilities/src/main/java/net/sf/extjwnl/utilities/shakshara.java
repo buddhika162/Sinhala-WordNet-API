@@ -68,7 +68,7 @@ public long addSynsetToText(MongoSinhalaSynset mongoSynset,POS pos) throws FileN
        return newSynset.getOffset();
 }
 
-public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSynset> verbSynset,List<MongoSinhalaSynset> adjSynset,HashMap<String, Integer> rootOrder) throws JWNLException{
+public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSynset> verbSynset,List<MongoSinhalaSynset> adjSynset,List<MongoSinhalaSynset> advSynset,HashMap<String, Integer> rootOrder) throws JWNLException{
 	dictionary = Dictionary.getInstance();
     dictionary.edit();
     
@@ -92,6 +92,13 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
 		adjOrder.put(s.getEWNId(), adjord);
 		//System.out.println("s"+s.toString());
 		adjord++;
+	}
+	HashMap<Long, Integer> advOrder = new HashMap<Long, Integer>();
+    int advord=0;
+	for(MongoSinhalaSynset s : advSynset){
+		advOrder.put(s.getEWNId(), adjord);
+		//System.out.println("s"+s.toString());
+		advord++;
 	}
     
     
@@ -140,6 +147,24 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
     }
     
     Collections.sort(adjsynsetlist, new Comparator<Synset>() {
+
+       
+		@Override
+		public int compare(Synset o1, Synset o2) {
+			// TODO Auto-generated method stub
+			return Long.compare(o1.getOffset(), o2.getOffset()); 
+		}
+    });
+    
+    Iterator<Synset> advsynsets = dictionary.getSynsetIterator(POS.ADVERB);
+	//Synset newSynset = new Synset(dictionary, POS.NOUN);
+    List<Synset> advsynsetlist = new ArrayList<Synset>();
+    while(advsynsets.hasNext()){
+    	advsynsetlist.add(advsynsets.next());
+	
+    }
+    
+    Collections.sort(advsynsetlist, new Comparator<Synset>() {
 
        
 		@Override
@@ -281,6 +306,11 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
 						tempOrder = adjOrder;
 						tempSynsets = adjSynset;
 					}
+					else if(pointers.get(i).getPointedFile().equals("adv")){
+						tempSynsetlist = advsynsetlist;
+						tempOrder = advOrder;
+						tempSynsets = advSynset;
+					}
 					
 					
 					
@@ -347,6 +377,10 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
 					}
 					else if(pointers.get(i).getPointedFile().equals("adj")){
 						adjSynset.get(nposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+adjSynset.get(nposision).toString());
+					}
+					else if(pointers.get(i).getPointedFile().equals("adv")){
+						advSynset.get(nposision).SetSencePointers(newSymPointerList);
 						//System.out.println("after"+adjSynset.get(nposision).toString());
 					}
 					
@@ -457,6 +491,11 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
 						tempOrder = adjOrder;
 						tempSynsets = adjSynset;
 					}
+					else if(pointers.get(i).getPointedFile().equals("adv")){
+						tempSynsetlist = advsynsetlist;
+						tempOrder = advOrder;
+						tempSynsets = advSynset;
+					}
 					
 					
 					
@@ -510,7 +549,11 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
 						adjSynset.get(vposision).SetSencePointers(newSymPointerList);
 						//System.out.println("after"+adjSynset.get(nposision).toString());
 					}
-					
+
+					else if(pointers.get(i).getPointedFile().equals("adv")){
+						advSynset.get(vposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+adjSynset.get(nposision).toString());
+					}
 					
 				}
 				
@@ -617,6 +660,11 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
 						tempOrder = adjOrder;
 						tempSynsets = adjSynset;
 					}
+					else if(pointers.get(i).getPointedFile().equals("adv")){
+						tempSynsetlist = advsynsetlist;
+						tempOrder = advOrder;
+						tempSynsets = advSynset;
+					}
 					
 					
 					
@@ -667,6 +715,10 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
 						//System.out.println("after"+verbSynset.get(nposision).toString());
 					}
 					else if(pointers.get(i).getPointedFile().equals("adj")){
+						adjSynset.get(adjposision).SetSencePointers(newSymPointerList);
+						//System.out.println("after"+adjSynset.get(nposision).toString());
+					}
+					else if(pointers.get(i).getPointedFile().equals("adv")){
 						adjSynset.get(adjposision).SetSencePointers(newSymPointerList);
 						//System.out.println("after"+adjSynset.get(nposision).toString());
 					}
@@ -832,6 +884,24 @@ public void editWord(int offset,int wordNo,String newWd)throws FileNotFoundExcep
 	       //IndexWord newWord3 = new IndexWord(dictionary, "bud123", POS.NOUN, selectedSynset);
 	       dictionary.save();
 	       //System.out.println("word"+nextword.get(2)+" new word "+newWord);
+}
+
+public Dictionary getDictionary(){
+	try {
+		//String propsFiles="E:\\EContenct\\extjwnl-1.6.10\\src\\extjwnl\\src\\main\\resources\\net\\sf\\extjwnl\\file_properties.xml";
+		JWNL.initialize(new FileInputStream(propsFile));
+//		dictionary = Dictionary.getInstance(new FileInputStream(propsFile));
+		
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (JWNLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	dictionary = Dictionary.getInstance();
+	
+	return dictionary;
 }
 
 }
