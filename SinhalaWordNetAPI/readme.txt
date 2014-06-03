@@ -1,3 +1,12 @@
+Sinhala wordnet API
+===================
+
+This is the Sinhala wordnet API.
+This is devoloped on top of extJWNL.
+
+Copyright : Sakshara Team, Department of Computer Science and Engineering, University of Moratuwa
+
+
 1. About extJWNL
 
 extJWNL (Extended Java WordNet Library) is  a  Java  API  for
