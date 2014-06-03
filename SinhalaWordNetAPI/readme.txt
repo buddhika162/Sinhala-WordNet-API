@@ -1,4 +1,4 @@
-Sinhala wordnet API
+Sinhala-wordnet-API
 ===================
 
 This is the Sinhala wordnet API.
