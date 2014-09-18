@@ -324,9 +324,19 @@ public void addRelations(List<MongoSinhalaSynset> nounSynset,List<MongoSinhalaSy
 					}
 					
 					
-					Long pid = pointers.get(i).getSynsetId();
-					int nposision = tempOrder.get(pid);
+					//Long pid = pointers.get(i).getSynsetId();
+					//int nposision = tempOrder.get(pid);
+					//Integer intSynID = (int) (long) pid;
+					// to avoid null pointer exception due to null key retrieval 
+					Long pid = pointers.get(i).getSynsetId(); 
+					int nposision=0;
+					if(tempOrder.containsKey(pid)){
+						 nposision = tempOrder.get(pid);
+					}else{
+						continue;						
+					}
 					Integer intSynID = (int) (long) pid;
+					
 					Pointer newPointer5 = new Pointer(jwnlpType, nsynsetlist.get(j), tempSynsetlist.get(nposision));
 					nsynsetlist.get(j).getPointers().add(newPointer5);
 					MongoSinhalaPoinertTypeSemetric SymPointerGenarator = new MongoSinhalaPoinertTypeSemetric();
